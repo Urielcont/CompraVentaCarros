@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model carros {
+  id                   BigInt            @id @default(autoincrement())
+  vin                  String?           @unique(map: "unique_vin")
+  marca                String?
+  modelo               String
+  a_o                  Int?              @map("año")
+  color                String?
+  tipo                 String?
+  caracteristicas      String?
+  detalles             String?
+  precio_compra        Decimal?          @db.Decimal(10, 2)
+  precio_venta         Decimal?          @db.Decimal(10, 2)
+  estado_venta         String?
+  estado_carro         String?
+  fecha_compra         DateTime?         @db.Date
+  fecha_venta          DateTime?         @db.Date
+  fecha_registro       DateTime?         @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime?         @default(now()) @db.Timestamptz(6)
+  sucursal_id          BigInt?
+  sucursales           sucursales?       @relation(fields: [sucursal_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sucursal")
+  historialcompra      historialcompra[]
+  historialventas      historialventas[]
+  ventas               ventas[]
+}
+
+model clientes {
+  id                   BigInt            @id @default(autoincrement())
+  nombres              String?
+  apellido_materno     String?
+  apellido_paterno     String?
+  telefono             String?           @unique(map: "unique_telefono")
+  correo               String?           @unique(map: "unique_correo")
+  direccion            String?
+  cp                   String?
+  identificacion       String?           @unique(map: "unique_identificacion")
+  fecha_nacimiento     DateTime?         @db.Date
+  fecha_registro       DateTime?         @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime?         @default(now()) @db.Timestamptz(6)
+  historialventas      historialventas[]
+  ventas               ventas[]
+}
+
+model empleado {
+  id                   BigInt            @id @default(autoincrement())
+  nombres              String?
+  apellido_materno     String?
+  apellido_paterno     String?
+  telefono             String?
+  correo               String?
+  direccion            String?
+  fecha_contratacion   DateTime?         @db.Date
+  cargo                String?
+  salario              Decimal?          @db.Decimal(10, 2)
+  estado_empleado      String?
+  fecha_registracion   DateTime?         @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime?         @default(now()) @db.Timestamptz(6)
+  sucursal_id          BigInt?
+  sucursales           sucursales?       @relation(fields: [sucursal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  historialcompra      historialcompra[]
+  historialventas      historialventas[]
+  ventas               ventas[]
+}
+
+model historialcompra {
+  id                   BigInt     @id @default(autoincrement())
+  fecha_compra         DateTime?  @db.Date
+  precio_compra        Decimal?   @db.Decimal(10, 2)
+  metodo_pago          String?
+  detalles             String?
+  fecha_registro       DateTime?  @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime?  @default(now()) @db.Timestamptz(6)
+  carro_id             BigInt?
+  proveedor_id         BigInt?
+  empleado_id          BigInt?
+  carros               carros?    @relation(fields: [carro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  empleado             empleado?  @relation(fields: [empleado_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  proveedor            proveedor? @relation(fields: [proveedor_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model historialventas {
+  id                   BigInt    @id @default(autoincrement())
+  fecha_venta          DateTime? @db.Date
+  precio_venta         Decimal?  @db.Decimal(10, 2)
+  metodo_pago          String?
+  detalles             String?
+  fecha_registro       DateTime? @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime? @default(now()) @db.Timestamptz(6)
+  carro_id             BigInt?
+  cliente_id           BigInt?
+  empleado_id          BigInt?
+  carros               carros?   @relation(fields: [carro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  clientes             clientes? @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  empleado             empleado? @relation(fields: [empleado_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model pagos {
+  id                   BigInt    @id @default(autoincrement())
+  monto                Decimal?  @db.Decimal(10, 2)
+  metodo_pago          String?
+  fecha_pago           DateTime? @db.Date
+  detalles             String?
+  fecha_registro       DateTime? @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime? @default(now()) @db.Timestamptz(6)
+  venta_id             BigInt?
+  ventas               ventas?   @relation(fields: [venta_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_venta")
+}
+
+model proveedor {
+  id              BigInt            @id @default(autoincrement())
+  nombre          String?
+  telefono        String?           @unique(map: "unique_proveedortelefono")
+  correo          String?           @unique(map: "unique_proveedorcorreo")
+  direccion       String?
+  historialcompra historialcompra[]
+}
+
+model sucursales {
+  id                   BigInt     @id @default(autoincrement())
+  nombre               String?
+  telefono             String?    @unique(map: "unique_sucursaltelefono")
+  gerente              String?
+  direccion            String?
+  ciudad               String?
+  estado               String?
+  pais                 String?
+  cp                   String?
+  correo               String?    @unique(map: "unique_sucursalcorreo")
+  fecha_registro       DateTime?  @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime?  @default(now()) @db.Timestamptz(6)
+  carros               carros[]
+  empleado             empleado[]
+}
+
+model users {
+  id       BigInt   @id @default(autoincrement())
+  username String?
+  email    String?  @unique(map: "unique_email")
+  password String?
+  rol      String?
+  status   Boolean?
+}
+
+model ventas {
+  id                   BigInt    @id @default(autoincrement())
+  estado_venta         String?
+  fecha_venta          DateTime? @db.Date
+  precio_venta         Decimal?  @db.Decimal(10, 2)
+  metodo_pago          String?
+  detalles             String?
+  fecha_registro       DateTime? @default(now()) @db.Timestamptz(6)
+  ultima_actualizacion DateTime? @default(now()) @db.Timestamptz(6)
+  carro_id             BigInt?
+  cliente_id           BigInt?
+  empleado_id          BigInt?
+  pagos                pagos[]
+  carros               carros?   @relation(fields: [carro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  clientes             clientes? @relation(fields: [cliente_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  empleado             empleado? @relation(fields: [empleado_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
