@@ -26,9 +26,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "El email ya está registrado" }, { status: 409 });
     }
 
-    // Hashear la contraseña
-   
-
     // Crear usuario en la base de datos
     const newUser = await prisma.users.create({
       data: {

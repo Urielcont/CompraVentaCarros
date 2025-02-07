@@ -62,7 +62,7 @@ export default function CarList() {
                   <td className="py-3 px-6">{car.color}</td>
                   <td className="py-3 px-6">${car.precio_venta.toLocaleString()}</td>
                   <td className="py-3 px-6">{car.caracteristicas || "N/A"}</td>
-                  <button className="py-3 px-6" value={car.id}></button>
+                  <button className="py-3 px-6 bg-slate-500" value={car.id}></button>
                   <button className="py-3 px-6" value={car.id}></button>
                 </tr>
               ))}
