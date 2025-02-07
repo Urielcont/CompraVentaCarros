@@ -41,11 +41,11 @@ export default function LoginForm() {
   };
 
   if (!isClient) {
-    return null; // Evita que el hook useRouter se ejecute en el servidor
+    return null; 
   }
 
   return (
-    <div className="max-w-fit mx-auto mt-10 p-6 border rounded-lg shadow-md bg-white">
+    <div className="max-w-screen-sm mx-auto mt-10 p-12 border border-black rounded-lg shadow-md bg-white">
       <h2 className="text-2xl font-semibold text-center mb-4">Iniciar sesión</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -75,7 +75,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-700 text-white p-2 rounded hover:bg-blue-500 transition"
+          className="w-full bg-green-700 text-white p-2 rounded hover:bg-blue-500 transition"
         >
           {loading ? "Iniciando sesión..." : "Iniciar sesión"}
         </button>

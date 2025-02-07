@@ -37,7 +37,7 @@ export default function CarList() {
   }
 
   return (
-    <div className="car-list p-6 max-w-screen-xl mx-auto mt-10">
+    <div className="car-list p-6 max-w-screen-xl mx-auto mt-10 text-white">
       <h2 className="text-2xl font-semibold text-center mb-6">Lista de Carros</h2>
       
       {cars.length === 0 ? (
@@ -51,6 +51,8 @@ export default function CarList() {
                 <th className="py-3 px-6 text-left">Color</th>
                 <th className="py-3 px-6 text-left">Precio de Venta</th>
                 <th className="py-3 px-6 text-left">Características</th>
+                <th className="py-3 px-6 text-left">Actualizar</th>
+                <th className="py-3 px-6 text-left">Eliminar</th>
               </tr>
             </thead>
             <tbody>
@@ -60,6 +62,8 @@ export default function CarList() {
                   <td className="py-3 px-6">{car.color}</td>
                   <td className="py-3 px-6">${car.precio_venta.toLocaleString()}</td>
                   <td className="py-3 px-6">{car.caracteristicas || "N/A"}</td>
+                  <button className="py-3 px-6" value={car.id}></button>
+                  <button className="py-3 px-6" value={car.id}></button>
                 </tr>
               ))}
             </tbody>
